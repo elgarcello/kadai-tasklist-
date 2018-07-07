@@ -1,0 +1,17 @@
+<% if logged_in? %>
+  <h1>ログインユーザ:<%= current_user.name %></h1>
+  <h2>タスク一覧</h2>
+  <% @tasks.each_with_index do |task, idx| %>
+  <ul>
+    <li><%= link_to idx+1, task_path(task, number: idx+1) %>:<%= task.content %>:<%= task.status %></li>
+  </ul>
+  <% end %>
+  <%= link_to '新規タスクの作成', new_task_path %>
+<% else %>
+  <div class="center jumbotron">
+    <div class="text-center">
+      <h1>Welcome to the Tasklist</h1>
+      <%= link_to 'Sign up now!', signup_path, class: 'btn btn-lg btn-primary' %>
+    </div>
+  </div>
+<% end %>
