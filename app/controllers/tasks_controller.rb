@@ -1,12 +1,12 @@
 class TasksController < ApplicationController
   before_action :require_user_logged_in
+  before_action :correct_user, only: [:show, :edit, :update, :destroy]
   
   def index
     @tasks = Task.all
   end
 
   def show
-    @task = Task.find(params[:id])
     params[:number]
   end
 
@@ -26,11 +26,9 @@ class TasksController < ApplicationController
   end
 
   def edit
-    @task = Task.find(params[:id])
   end
 
   def update
-    @task = Task.find(params[:id])
     if @task.update(task_params)
       flash[:success] = 'タスクは正常に更新されました'
       redirect_to @task
@@ -41,11 +39,10 @@ class TasksController < ApplicationController
   end
 
   def destroy
-    @task = Task.find(params[:id])
     @task.destroy
     
     flash[:success] = 'タスクは正常に削除されました'
-    redirect_to tasks_url
+    redirect_to root_url
   end
 
 
@@ -54,5 +51,10 @@ class TasksController < ApplicationController
   # Strong Parameter
   def task_params
     params.require(:task).permit(:content, :status)
+  end
+  
+  def correct_user
+    @task = Task.find_by(id: params[:id])
+    redirect_to root_url if @task.user != current_user
   end
 end
